@@ -23,4 +23,4 @@ jobs:                        # All the jobs in this workflow
         run: npm ci              # ci = clean install (faster, deterministic)
 
       - name: Run tests
-        run: npm test
+        run: npm test 
