@@ -1,26 +1,37 @@
-name: CI Pipeline           # Display name in GitHub UI
+name: CI — Test on PR
 
-on:                          # What triggers this workflow
-  push:
-    branches: [main, develop]  # Only on pushes to these branches
+on:
   pull_request:
-    branches: [main]           # Also on PRs targeting main
+    branches: [main]
+  push:
+    branches: [main]
 
-jobs:                        # All the jobs in this workflow
-  test:                      # Job name (you choose this)
-    runs-on: ubuntu-latest  # Which OS to use
+jobs:
+  test:
+    name: Run Jest Tests
+    runs-on: ubuntu-latest
 
-    steps:                   # Steps run top to bottom
-      - name: Checkout code
-        uses: actions/checkout@v4   # Clones your repo onto runner
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Set up Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'         # cache node_modules between runs
 
       - name: Install dependencies
-        run: npm ci              # ci = clean install (faster, deterministic)
+        run: npm ci
 
       - name: Run tests
-        run: npm test 
+        run: npm test
+        env:
+          NODE_ENV: test
+
+      - name: Upload coverage report   # optional but useful
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
