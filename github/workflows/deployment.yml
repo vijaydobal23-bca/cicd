@@ -1,0 +1,26 @@
+name: CI Pipeline           # Display name in GitHub UI
+
+on:                          # What triggers this workflow
+  push:
+    branches: [main, develop]  # Only on pushes to these branches
+  pull_request:
+    branches: [main]           # Also on PRs targeting main
+
+jobs:                        # All the jobs in this workflow
+  test:                      # Job name (you choose this)
+    runs-on: ubuntu-latest  # Which OS to use
+
+    steps:                   # Steps run top to bottom
+      - name: Checkout code
+        uses: actions/checkout@v4   # Clones your repo onto runner
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci              # ci = clean install (faster, deterministic)
+
+      - name: Run tests
+        run: npm test
